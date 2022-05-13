@@ -4,6 +4,9 @@ import cvxopt as cvx
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
+IMAGE_PATH = ""
+LABEL_PATH = ""
+
 def train_test_split(data,labels):
     
     X_train, X_test = np.split(data, 2)
@@ -93,8 +96,8 @@ def draw_accuracy(accuracy_train,accuracy_test,c_values):
     
 if __name__ == "__main__":
     # read data into memory
-    image_data = np.genfromtxt("hw06_data_set_images.csv", delimiter = ",")
-    image_labels = np.genfromtxt("hw06_data_set_labels.csv", delimiter = ",").astype(int)
+    image_data = np.genfromtxt(IMAGE_PATH, delimiter = ",")
+    image_labels = np.genfromtxt(LABEL_PATH, delimiter = ",").astype(int)
     
     # split train/test data
     X_train, X_test, y_train, y_test = train_test_split(image_data,image_labels)
