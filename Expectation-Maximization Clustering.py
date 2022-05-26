@@ -27,7 +27,7 @@ def EM(X,init,iter=100):
     mean = init.copy()
     initial_member = get_memberships(mean,X)
     prior = np.asarray(np.bincount(initial_member)/len(initial_member))
-    cov = np.asarray([get_cov(X[i==initial_member],N) for i in range(len(init))])
+    cov = np.asarray([get_cov(X[i==initial_member]-mean[i],len(X[i==initial_member])) for i in range(len(init))])
     
     # perform n iterations of EM algorithm
     for _ in range(iter):               
@@ -71,10 +71,10 @@ def draw_cluster(X,EM_means,EM_values,cov,priors):
 
     """Draw contours based on EM densities"""
     c = 0
-    for pi, mu, cov in zip(priors, EM_means, cov):
-        z = pi*multivariate_normal(mu, cov).pdf(_ys)
+    for mu, cov in zip(EM_means, cov):
+        z = multivariate_normal(mu, cov).pdf(_ys)
         z = z.reshape((intervals, intervals))
-        plt.contour(X_new, Y, z, [0.005],colors=cluster_colors[c])
+        plt.contour(X_new, Y, z, [0.05],colors=cluster_colors[c])
         c += 1
   
     """Initialize params of original Gaussian densities"""
@@ -87,11 +87,11 @@ def draw_cluster(X,EM_means,EM_values,cov,priors):
 
     """Draw contours based on original densities"""
     z = np.zeros(len(_ys))
-    for pi, mu, cov in zip(priors, means, cov):
-        z += pi*multivariate_normal(mu, cov).pdf(_ys)
+    for mu, cov in zip(means, cov):
+        z += multivariate_normal(mu, cov).pdf(_ys)
 
     z = z.reshape((intervals, intervals))
-    plt.contour(X_new,Y,z,[0.005],linestyles="dashed")
+    plt.contour(X_new,Y,z,[0.05],linestyles="dashed")
 
     """Set axes and labels"""       
     ax = plt.gca()
